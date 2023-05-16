@@ -33,7 +33,6 @@ class AWSServices {
       print('Error authenticating user. $e');
     }
   }
-
   Future<void> changePassword(email, oldPassword, newPassword) async {
     print('Authenticating User...');
     print('$email -- $oldPassword -- $newPassword');
@@ -116,8 +115,8 @@ class AWSServices {
       print(e);
     }
     print(session!.getAccessToken().getJwtToken());
-    print(session!.getIdToken().getJwtToken());
-    print(session!.getRefreshToken()!.getToken());
+    print(session.getIdToken().getJwtToken());
+    print(session.getRefreshToken()!.getToken());
   }
 
 
