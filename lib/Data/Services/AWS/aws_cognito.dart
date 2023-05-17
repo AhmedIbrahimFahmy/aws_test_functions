@@ -6,8 +6,8 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class AWSServices {
   final userPool = CognitoUserPool(
-    'us-east-1_MlRG8jzK9',
-    '4ijc5tub0f1am7dqv5g8p7de3p',
+    '${(dotenv.env['POOL_ID'])}',
+    '${(dotenv.env['CLIENT_ID'])}',
   );
   CognitoUserSession? _session;
 
@@ -136,10 +136,5 @@ class AWSServices {
     } catch (e) {
       print(e);
     }
-  }
-
-  void print_info() {
-    print('${(dotenv.env['POOL_ID'])}');
-    print('${(dotenv.env['CLIENT_ID'])}');
   }
 }
