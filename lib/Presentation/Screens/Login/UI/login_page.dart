@@ -1,3 +1,6 @@
+import 'package:aws_cognito_app/Presentation/Screens/Login/UI/change_password.dart';
+import 'package:aws_cognito_app/Presentation/Screens/Login/UI/test_screen.dart';
+import 'package:aws_cognito_app/constants.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../Data/Services/AWS/aws_cognito.dart';
@@ -61,10 +64,45 @@ class _LoginPageState extends State<LoginPage> {
                 labelTxt: 'Password',
                 icon: Icons.lock),
             HeightSpacer(myHeight: kSpacing),
-            PrimaryBtn(
-                btnText: 'Login',
-                btnFun: () =>
-                    login(emailController.text, passwordController.text))
+            Container(
+              width: 350,
+              color: Colors.purple,
+              child: TextButton(
+
+                  child: Text('Login', style: TextStyle(fontSize: 30),),
+                  onPressed: () {
+                    login_state = -1;
+                    login(emailController.text, passwordController.text).then((value){
+                      if(login_state == 1){
+                        Navigator.pop(context);
+                        Navigator.push(context, MaterialPageRoute(
+                            builder: (context) => WelcomeScreen())
+                        );
+                      }
+                      else
+                        if(login_state == 2){
+                          Navigator.push(context, MaterialPageRoute(
+                              builder: (context) => ChangePassword())
+                          );
+                        }
+                        else
+                          if(login_state == 3){
+                            showDialog(context: context, builder: (context) =>
+                                AlertDialog(
+                                  title: Text('Error'),
+                                  content: Text('Invalid Username or Password'),
+                                  actions: [
+                                    TextButton(onPressed: () {
+                                      Navigator.pop(context);
+                                    }, child: Text('OK'))
+                                  ],
+                                )
+                            );
+                          }
+                    });
+                  }
+              ),
+            )
           ]),
         ),
       ),

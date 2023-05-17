@@ -26,11 +26,13 @@ class AWSServices {
       print('ID token: ${_session!.getIdToken().getJwtToken()}');
       print('Access token: ${_session!.getAccessToken().getJwtToken()}');
       print('Refresh token: ${_session!.getRefreshToken()!.getToken()}');
+      login_state = 1;
     } on CognitoUserNewPasswordRequiredException catch (e) {
       print('New password required. $e');
-      Change = true;
+      login_state = 2;
     } catch (e) {
       print('Error authenticating user. $e');
+      login_state = 3;
     }
   }
   Future<void> changePassword(email, oldPassword, newPassword) async {
