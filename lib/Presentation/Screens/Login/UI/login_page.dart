@@ -1,5 +1,7 @@
 import 'package:aws_cognito_app/Presentation/Screens/Login/UI/change_password.dart';
+import 'package:aws_cognito_app/Presentation/Screens/Login/UI/signup_page.dart';
 import 'package:aws_cognito_app/Presentation/Screens/Login/UI/test_screen.dart';
+import 'package:aws_cognito_app/Presentation/Screens/Login/UI/validation_code.dart';
 import 'package:aws_cognito_app/constants.dart';
 import 'package:flutter/material.dart';
 
@@ -49,7 +51,7 @@ class _LoginPageState extends State<LoginPage> {
             Image.asset(
               loginImages[0],
               width: 350,
-              height: 350,
+              height: 300,
               fit: BoxFit.cover,
             ),
             InputField(
@@ -73,20 +75,34 @@ class _LoginPageState extends State<LoginPage> {
                   onPressed: () {
                     login_state = -1;
                     login(emailController.text, passwordController.text).then((value){
-                      if(login_state == 1){
+                      if(login_state == 1){ // Login Successful State
                         Navigator.pop(context);
                         Navigator.push(context, MaterialPageRoute(
                             builder: (context) => WelcomeScreen())
                         );
                       }
                       else
-                        if(login_state == 2){
-                          Navigator.push(context, MaterialPageRoute(
-                              builder: (context) => ChangePassword())
+                        if(login_state == 2){ // New Password required State
+                          Useremail = emailController.text;
+                          showDialog(context: context, builder: (context) =>
+                              AlertDialog(
+                                title: Text('Error'),
+                                content: Text('Please check your email for the verified code'),
+                                actions: [
+                                  TextButton(onPressed: () {
+                                    Navigator.pop(context);
+                                    Navigator.pop(context);
+                                    Navigator.push(context, MaterialPageRoute(
+                                        builder: (context) => ValidationScreen())
+                                    );
+                                  }, child: Text('OK'))
+                                ],
+                              )
                           );
+
                         }
                         else
-                          if(login_state == 3){
+                          if(login_state == 3){ // Error State
                             showDialog(context: context, builder: (context) =>
                                 AlertDialog(
                                   title: Text('Error'),
@@ -102,7 +118,21 @@ class _LoginPageState extends State<LoginPage> {
                     });
                   }
               ),
+            ),
+            SizedBox(height: 20,),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text('Don\'t have an account ?'),
+                TextButton(
+                    onPressed: (){
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => SignupScreen()));
+                    },
+                    child: Text('Signup')
+                ),
+              ],
             )
+
           ]),
         ),
       ),

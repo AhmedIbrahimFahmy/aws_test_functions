@@ -38,6 +38,8 @@ dependencies:
   cupertino_icons: ^1.0.2
   amazon_cognito_identity_dart_2: ^3.1.1
   flutter_dotenv: ^5.0.2
+  http_requests: ^2.6.0
+  requests: ^4.7.0
   
 
 dev_dependencies:

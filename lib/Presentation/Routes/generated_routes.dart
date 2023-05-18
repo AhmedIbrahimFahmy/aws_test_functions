@@ -1,5 +1,8 @@
+import '../Screens/Login/UI/change_password.dart';
 import '../Screens/Login/UI/login_page.dart';
 import 'package:flutter/material.dart';
+
+import '../Screens/Login/UI/validation_code.dart';
 
 class RouteGenerator {
   Route<dynamic> generateRoute(RouteSettings settings) {
@@ -7,7 +10,7 @@ class RouteGenerator {
     switch (settings.name) {
       case '/':
         return MaterialPageRoute(
-            builder: (_) => const LoginPage(title: 'AWS Cognito'));
+            builder: (_) => const LoginPage(title: 'AWS login Page'));
       default:
         return _errorRoute();
     }

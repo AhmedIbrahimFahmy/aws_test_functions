@@ -1,7 +1,11 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:amazon_cognito_identity_dart_2/cognito.dart';
 import 'package:aws_cognito_app/constants.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:http/http.dart' as http;
+import 'package:http_requests/http_requests.dart';
+import 'package:requests/requests.dart';
 
 
 class AWSServices {
@@ -35,6 +39,7 @@ class AWSServices {
       login_state = 3;
     }
   }
+
   Future<void> changePassword(email, oldPassword, newPassword) async {
     print('Authenticating User...');
     print('$email -- $oldPassword -- $newPassword');
@@ -60,7 +65,6 @@ class AWSServices {
       print(passwordChanged);
     } on CognitoUserNewPasswordRequiredException catch (e) {
       print('New password required. $e');
-      Change = true;
     } catch (e) {
       print('Error authenticating user. $e');
     }
@@ -78,15 +82,19 @@ class AWSServices {
       session = await cognitoUser.authenticateUser(authDetails);
     } on CognitoUserNewPasswordRequiredException catch (e) {
       try {
-        if(e.requiredAttributes!.isEmpty) {
+        if (e.requiredAttributes!.isEmpty) {
           // No attribute hast to be set
-          session = await cognitoUser.sendNewPasswordRequiredAnswer(newPassword);
+          session =
+          await cognitoUser.sendNewPasswordRequiredAnswer(newPassword);
+          Changed = true;
         } else {
           // All attributes from the e.requiredAttributes has to be set.
           print(e.requiredAttributes);
           // For example obtain and set the name attribute.
           var attributes = { "name": "Adam Kaminski"};
-          session = await cognitoUser.sendNewPasswordRequiredAnswer(newPassword, attributes);
+          session = await cognitoUser.sendNewPasswordRequiredAnswer(
+              newPassword, attributes);
+          Changed = true;
         }
       } on CognitoUserMfaRequiredException catch (e) {
         // handle SMS_MFA challenge
@@ -122,21 +130,27 @@ class AWSServices {
   }
 
 
-  Future<void> signup() async {
-    final userAttributes = [
-      AttributeArg(name: 'phone_number', value: '+201011111111'),
-    ];
-    var data;
-    try {
-      data = await userPool.signUp(
-        'af2752001@gmail.com',
-        'Ahmed@123456',
-        userAttributes: userAttributes,
-      );
-      print('Signed up successful');
-      print(data);
-    } catch (e) {
-      print(e);
+  Future<void> signup(username, email, gender, phone) async {
+    print('Signing up...');
+
+    final url = 'http://AIArt-env.eba-z7jwmmxy.us-east-1.elasticbeanstalk.com/api/aiart/v1/users/signup'; // Replace with the correct URL
+    final headers = {'Content-Type': 'application/json'};
+    final data = {
+      'name': username,
+      'email': email,
+      'gender': gender,
+      'phoneNumber': phone,
+    };
+    final body = json.encode(data);
+
+    final response = await http.post(Uri.parse(url), headers: headers, body: body);
+    if(response.statusCode == 201){
+      signup_state = 1;
     }
+    else{
+      signup_state = 2;
+    }
+    print(response.statusCode);
+    print(response.body);
   }
 }

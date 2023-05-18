@@ -1,4 +1,6 @@
 import 'package:aws_cognito_app/Data/Services/AWS/aws_cognito.dart';
+import 'package:aws_cognito_app/Presentation/Screens/Login/UI/login_page.dart';
+import 'package:aws_cognito_app/Presentation/Screens/Login/UI/test_screen.dart';
 import 'package:aws_cognito_app/constants.dart';
 import 'package:flutter/material.dart';
 
@@ -104,10 +106,11 @@ class _ValidationScreenState extends State<ValidationScreen> {
                 height: 70,
                 child: TextButton(
                     onPressed: (){
-                      AWSServices().forceChangePassword('ahmedglal@protonmail.com',
+                      Changed = false;
+                      AWSServices().forceChangePassword(Useremail,
                           CodeController.text,
                           NewPassController.text
-                      );
+                      ).then((value) => IsChanged(Changed));
                     },
                     child: Text(
                         'Submit',
@@ -121,5 +124,35 @@ class _ValidationScreenState extends State<ValidationScreen> {
         ),
       ),
     );
+  }
+  void IsChanged(bool change){
+    if(change == true){
+      showDialog(context: context, builder: (context) =>
+          AlertDialog(
+            title: Text('Verification successfully'),
+            content: Text('You are successfully verified, Log in with your new password'),
+            actions: [
+              TextButton(onPressed: () {
+                Navigator.pop(context);
+                Navigator.pop(context);
+                Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage(title: 'AWS login page',)));
+              }, child: Text('OK'))
+            ],
+          )
+      );
+    }
+    else{
+      showDialog(context: context, builder: (context) =>
+          AlertDialog(
+            title: Text('Error'),
+            content: Text('Invalid Password, try another one'),
+            actions: [
+              TextButton(onPressed: () {
+                Navigator.pop(context);
+              }, child: Text('OK'))
+            ],
+          )
+      );
+    }
   }
 }
